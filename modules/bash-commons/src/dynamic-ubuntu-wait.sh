@@ -22,11 +22,12 @@ set -e
 # and https://github.com/boxcutter/ubuntu/issues/86",
 # ---------------------------------------------------------------------------------------------------------------------
 
-echo "Dynamically waiting for ubuntu's automatic update mechanism to let go of locks..."
+echo "Dynamically waiting for Ubuntu's automatic update mechanism to let go of locks..."
 
 sleep 15 # In case this script is the very first command being run, we wait a bit to give unattended upgrades a chance to start.
 
-while sudo fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; echo 'waiting'; done
-while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; echo 'still waiting'; done
+while sudo fuser /var/cache/debconf/config.dat >/dev/null 2>&1; do sleep 1; echo 'waiting for debconf lock'; done
+while sudo fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; echo 'waiting for APT lock'; done
+while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; echo 'waiting for dpkg lock'; done
 
 echo "All locks should have been released..."
